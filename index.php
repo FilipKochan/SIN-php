@@ -39,29 +39,55 @@ else if ($sekce == 20){
 ?>
 <h1>Formulář</h1>
 <form>
+<div class="input">
 <input type="text" name="cislo1" placeholder="číslo 1" value="<?php if (isset($_REQUEST["cislo1"]) && is_numeric($_REQUEST["cislo1"])) echo $_REQUEST["cislo1"]?>">
+<?php if(isset($_REQUEST["spocitat"]) && !is_numeric($_REQUEST["cislo1"])) echo "<p>Toto neni cislo!</p>" ?>
+</div>
 
+<div class="input">
 <select name="operace" id="operace">
     <option value="+" <?php if(isset($_REQUEST["operace"]) && $_REQUEST["operace"] == "+") echo "selected=\"true\""; ?>>+</option>
     <option value="-" <?php if(isset($_REQUEST["operace"]) && $_REQUEST["operace"] == "-") echo "selected=\"true\""; ?>>-</option>
     <option value="*" <?php if(isset($_REQUEST["operace"]) && $_REQUEST["operace"] == "*") echo "selected=\"true\""; ?>>*</option>
     <option value="÷" <?php if(isset($_REQUEST["operace"]) && $_REQUEST["operace"] == "÷") echo "selected=\"true\""; ?>>÷</option>
 </select>
+</div>
+
+<div class="input">
+<input type="text" name="cislo2" placeholder="číslo 2" value="
+<?php
+    if ($_REQUEST["operace"] != "÷") {
+        if (isset($_REQUEST["cislo2"]) && is_numeric($_REQUEST["cislo2"])){ 
+            echo $_REQUEST["cislo2"];
+        }
+    }
+    else{
+        if ($_REQUEST["cislo2"] != 0) {
+            echo $_REQUEST["cislo2"];
+        }
+    }
+ ?>">
 
 
-<input type="text" name="cislo2" placeholder="číslo 2" value="<?php if (isset($_REQUEST["cislo2"]) && is_numeric($_REQUEST["cislo2"])) echo $_REQUEST["cislo2"]?>">
+<?php
+    if(isset($_REQUEST["spocitat"]) && !is_numeric($_REQUEST["cislo2"])) 
+        echo "<p>Toto neni cislo!</p>";
+    else if (isset($_REQUEST["spocitat"]) && $_REQUEST["operace"] == "÷" && $_REQUEST["cislo2"] == 0)
+        echo "<p>Nulou nelze delit!</p>";
+?>
+</div>
 <input type="hidden" name="sekce" value="<?php echo $sekce?>">
+<div class="input">
 <input type="submit" name="spocitat" value="Spočítej!">
+</div>
 </form>
 <?php
-$spravneZadani = true;
 if(isset($_REQUEST["spocitat"])){
-    if (isset($_REQUEST["cislo1"]) && is_numeric($_REQUEST["cislo1"])) {
-        
-    }
-    if (isset($_REQUEST["cislo2"]) && is_numeric($_REQUEST["cislo2"])){
-        
-    }
+    if (isset($_REQUEST["cislo1"]) && is_numeric($_REQUEST["cislo1"])) 
+        if (isset($_REQUEST["cislo2"]) && is_numeric($_REQUEST["cislo2"]))
+            if (!($_REQUEST["cislo2"] == 0 && $_REQUEST["operace"] == "÷"))
+                $spravneZadani = true;
+    
 }
 else
     $spravneZadani = false;
@@ -86,8 +112,24 @@ if ($spravneZadani) {
 }
 }
 else if ($sekce == 30){
-print("<h1>Kontakt</h1>");
+    print("<h1>Kontakt</h1>");
 }
 ?>
+
+<style>
+    .input {
+        display: inline-block;
+        vertical-align: top;        
+    }
+    .input input {
+        display: block;
+    }
+    .input p {
+        margin: 0;
+        font-size: 80%;
+        text-align: center;
+        color: red;
+    }
+</style>
 </body>
 </html>
